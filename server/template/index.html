@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>表白{{Ta}}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<style type="text/css">
+		canvas {
+			display: block;
+		}
+
+		#particles-js {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: 50% 50%;
+		}
+
+		body {
+			text-align: center;
+			margin: 0;
+			padding: 0;
+			font-size: 25px;
+			color: #FFF;
+			font-family: "微软雅黑";
+			background: #f3961c;
+		}
+
+		div {
+			text-align: left;
+		}
+
+		.title {
+			width: 100%;
+			background: #f3961c;
+			top: 0;
+			height: 100%;
+			z-index: 0;
+			position: fixed;
+			display: none;
+			cursor: default;
+		}
+
+		.title p {
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			vertical-align: middle;
+		}
+
+		table {
+			width: 100%;
+			height: 100%;
+		}
+
+		td {
+			text-align: center;
+		}
+
+		.tishi {
+			position: fixed;
+			z-index: 99;
+			bottom: 50px;
+			width: 100%;
+			text-align: center;
+		}
+
+		.tishi button {
+			background-color: #fff;
+			color: #f3961c;
+			border-color: #f3961c;
+			display: inline-block;
+			padding: 6px 12px;
+			margin-bottom: 0;
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 1.42857143;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: middle;
+			-ms-touch-action: manipulation;
+			touch-action: manipulation;
+			cursor: pointer;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			background-image: none;
+			border: 1px solid transparent;
+			border-radius: 4px;
+			outline: none;
+			box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125)
+		}
+
+		@media screen and (max-width: 569px) {
+			body {
+				font-size: 0.9rem;
+			}
+
+			.tishi {
+				bottom: 1.5rem;
+			}
+
+			.tishi button {
+				padding: 0.2rem 0.4rem;
+				font-size: 0.8rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	{{content}}
+	<div class="tishi">
+		<button id="continue">点击继续</button>
+		<p>{{You}} love {{Ta}} </p>
+	</div>
+	<div id="particles-js"></div>
+	<audio id="bgMusic" src="/confession/assets/audio/test.mp3" autoplay preload loop="loop" hidden="hidden"
+		controls></audio>
+
+	<script crossorigin="anonymous" src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+	<script type="text/javascript">
+		!(function (doc, win) {
+			var docEle = doc.documentElement,
+				evt = "onorientationchange" in window ? "orientationchange" : "resize",
+				fn = function () {
+					var width = docEle.clientWidth;
+					width && (docEle.style.fontSize = 20 * (width / 320) + "px");
+				};
+
+			win.addEventListener(evt, fn, false);
+			doc.addEventListener("DOMContentLoaded", fn, false);
+
+		}(document, window));
+
+		function Confession() {
+			this.index = 1  // 当前展示的屏幕的索引
+			this.isPlaying = false  // 是否正在播放
+			this.timer = null  // 定时器
+			this.$audio = $("#bgMusic").get(0)  // 音频元素
+
+			// 开始播放
+			this.startPlaying = function () {
+				var _this = this
+				this.isPlaying = true
+				this.$audio.play() // 播放
+				$('#continue').text("点击暂停")
+				var loop = function () {
+					_this.index++
+					$(".title").slideUp(1000).fadeOut();
+					$("#t-" + _this.index).slideDown(1000).fadeIn()
+					if (_this.index > $(".title").length) {
+						_this.index = 0
+					}
+					_this.timer = setTimeout(function () {
+						loop()
+					}, 3000)
+				}
+				loop()
+			}
+
+			// 暂停播放
+			this.stopPlaying = function () {
+				this.isPlaying = false
+				this.$audio.pause()
+				clearTimeout(this.timer)
+				$('#continue').text("点击继续")
+			}
+
+			// 初始化
+			this.initRun = function () {
+				var timer, _this = this
+				$(document).ready(function () {
+					$("#t-" + _this.index).fadeIn();
+				});
+				$("#continue").click(function () {
+					_this.isPlaying ? _this.stopPlaying() : _this.startPlaying()
+				});
+			}
+		}
+
+		new Confession().initRun()
+
+		// particlesJS 配置
+		particlesJS('particles-js',
+			{
+				"particles": {
+					"number": {
+						"value": 80,
+						"density": {
+							"enable": true,
+							"value_area": 800
+						}
+					},
+					"color": {
+						"value": "#ffffff"
+					},
+					"shape": {
+						"type": "circle",
+						"stroke": {
+							"width": 0,
+							"color": "#000000"
+						},
+						"polygon": {
+							"nb_sides": 5
+						},
+						"image": {
+							"src": "img/github.svg",
+							"width": 100,
+							"height": 100
+						}
+					},
+					"opacity": {
+						"value": 0.5,
+						"random": false,
+						"anim": {
+							"enable": false,
+							"speed": 1,
+							"opacity_min": 0.1,
+							"sync": false
+						}
+					},
+					"size": {
+						"value": 5,
+						"random": true,
+						"anim": {
+							"enable": false,
+							"speed": 40,
+							"size_min": 0.1,
+							"sync": false
+						}
+					},
+					"line_linked": {
+						"enable": true,
+						"distance": 150,
+						"color": "#ffffff",
+						"opacity": 0.4,
+						"width": 1
+					},
+					"move": {
+						"enable": true,
+						"speed": 6,
+						"direction": "none",
+						"random": false,
+						"straight": false,
+						"out_mode": "out",
+						"attract": {
+							"enable": false,
+							"rotateX": 600,
+							"rotateY": 1200
+						}
+					}
+				},
+				"interactivity": {
+					"detect_on": "canvas",
+					"events": {
+						"onhover": {
+							"enable": true,
+							"mode": "repulse"
+						},
+						"onclick": {
+							"enable": true,
+							"mode": "push"
+						},
+						"resize": true
+					},
+					"modes": {
+						"grab": {
+							"distance": 400,
+							"line_linked": {
+								"opacity": 1
+							}
+						},
+						"bubble": {
+							"distance": 400,
+							"size": 40,
+							"duration": 2,
+							"opacity": 8,
+							"speed": 3
+						},
+						"repulse": {
+							"distance": 200
+						},
+						"push": {
+							"particles_nb": 4
+						},
+						"remove": {
+							"particles_nb": 2
+						}
+					}
+				},
+				"retina_detect": true,
+				"config_demo": {
+					"hide_card": false,
+					"background_color": "#b61924",
+					"background_image": "",
+					"background_position": "50% 50%",
+					"background_repeat": "no-repeat",
+					"background_size": "cover"
+				}
+			}
+
+		);
+	</script>
+</body>
+
+</html>
